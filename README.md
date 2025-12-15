@@ -1,51 +1,82 @@
 # TrustChain Protocol
 
-TrustChain is an AI-powered trust infrastructure protocol designed to verify digital agreements, prevent fraud, and build reputation on-chain.
+TrustChain is an AI-powered trust infrastructure designed to verify digital agreements,
+prevent fraud, and build reputation systems using cryptographic proofs and blockchain technology.
+
+The internet lacks a native trust layer.
+Agreements rely on promises, screenshots, and assumptions.
+TrustChain verifies trust — not words.
+
+---
 
 ## Why TrustChain
 
-The internet still lacks a native trust layer.
+Digital interactions scale faster than trust.
 
-Agreements rely on words, screenshots, and assumptions — creating space for fraud, manipulation, and broken promises.
+• Agreements are easy to break and hard to verify  
+• Fraud scales globally, reputation remains fragmented  
+• Existing systems rely on enforcement instead of prevention  
 
 TrustChain introduces a new approach:
 **trust is verified, not promised.**
 
+---
+
 ## Core Components
 
-- **AI Agreement Analysis**  
-  Detects risks, imbalance, and unclear clauses before signing.
+### 1. AI Agreement Analysis
+Analyzes agreement text before signing.
+Detects risks, imbalances, unclear clauses, and hidden vulnerabilities.
 
-- **On-Chain Proofs**  
-  Cryptographic fingerprints of agreements stored on blockchain.
+### 2. On-Chain Proofs
+Creates cryptographic fingerprints of agreements.
+Lifecycle events are verifiable on-chain without exposing private data.
 
-- **Identity & Verification (Optional KYC)**  
-  Flexible identity layer for higher trust levels.
+### 3. Identity & Verification (Optional KYC)
+Flexible identity layer.
+Users can remain pseudonymous or verify identity for higher trust levels.
 
-- **Reputation System**  
-  Dynamic trust scores based on agreement history and behavior.
+### 4. Reputation System
+Dynamic reputation scores based on:
+• agreement history  
+• fulfillment behavior  
+• disputes and resolution outcomes  
+
+Reputation is earned, not claimed.
+
+---
 
 ## Design Philosophy
 
-TrustChain is not just a contract platform.  
-It is a foundational protocol for honest digital interaction.
+TrustChain is not a contract platform.
+It is a foundational trust protocol.
 
-Modular. Transparent. Verifiable by design.
+• Modular  
+• Transparent  
+• Verifiable by design  
+
+Built for long-term digital interaction.
+
+---
 
 ## Project Status
 
-🚧 Early-stage development / research phase  
-Private implementation is under active development.
+TrustChain is under active development.
 
-This repository represents the **public protocol vision**.
+• Protocol architecture evolving  
+• Application layer in progress  
+• Early access opening soon  
 
+---
 ## Links
 
-- Website: https://trustchain.biz  
+- Application: https://app.trustchain.biz
 - X (Twitter): https://x.com/trustchainai  
 - Instagram: https://instagram.com/trustchainai  
 - Telegram: https://t.me/trustchainai  
 
 ---
 
-**Trust is infrastructure.**
+## License
+
+License to be defined.
