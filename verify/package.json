@@ -1,0 +1,42 @@
+{
+  "name": "trustchain-verify",
+  "version": "0.1.0",
+  "description": "Check a TrustChain record against the Polygon chain yourself. Read-only, no dependencies.",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "bin": {
+    "trustchain-verify": "bin/trustchain-verify.js"
+  },
+  "files": [
+    "index.js",
+    "bin/",
+    "src/",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "test:live": "TRUSTCHAIN_LIVE=1 node --test",
+    "record-fixtures": "node scripts/record-fixtures.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "trustchain",
+    "polygon",
+    "verify",
+    "keccak256",
+    "anchor"
+  ],
+  "homepage": "https://github.com/TRUSTCHAIN-creator-KK/trustchain-protocol/tree/main/verify",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TRUSTCHAIN-creator-KK/trustchain-protocol.git",
+    "directory": "verify"
+  },
+  "license": "MIT",
+  "private": true
+}
