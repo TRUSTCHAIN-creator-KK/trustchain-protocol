@@ -1,0 +1,6 @@
+* text=auto eol=lf
+
+# These must stay byte for byte identical to what was compiled and deployed.
+# Any line-ending conversion would break the source and metadata hashes.
+contracts/TrustChainRegistry.sol -text
+contracts/build/** -text
