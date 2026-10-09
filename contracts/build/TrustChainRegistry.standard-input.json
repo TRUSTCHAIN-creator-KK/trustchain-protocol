@@ -1,0 +1,29 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/TrustChainRegistry.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\n\n/**\n * @title  TrustChainRegistry\n * @notice Minimal proof-of-existence registry for TrustChain on Polygon PoS mainnet.\n *         Stores a cryptographic fingerprint per agreement. Proof only — no content.\n *\n * @dev    Gas-optimised for Polygon:\n *           - bytes32 key (keccak256 of agreementId) avoids dynamic string storage\n *           - uint48 anchoredAt packs with address counterparty into one 32-byte slot\n *           - custom errors instead of revert strings\n *           - calldata strings for external calls\n */\ncontract TrustChainRegistry {\n\n    // ── Storage ──────────────────────────────────────────────────────────────\n\n    struct Proof {\n        bytes32 documentHash;   // keccak256 fingerprint of canonical agreement fields\n        address creator;        // originator wallet address (zero if not provided)\n        address counterparty;   // counterparty wallet address (zero if not provided)\n        uint48  anchoredAt;     // unix timestamp — uint48 holds dates until year 281,474\n    }\n\n    // key = keccak256(abi.encodePacked(agreementId))\n    mapping(bytes32 => Proof) public proofs;\n\n    // ── Events ────────────────────────────────────────────────────────────────\n\n    event Anchored(\n        bytes32 indexed key,\n        string          agreementId,\n        bytes32         documentHash,\n        address indexed creator,\n        uint48          anchoredAt\n    );\n\n    // ── Errors ────────────────────────────────────────────────────────────────\n\n    error AlreadyAnchored();\n    error ZeroHash();\n\n    // ── Write ─────────────────────────────────────────────────────────────────\n\n    /**\n     * @notice Anchor an agreement's cryptographic fingerprint.\n     * @param  agreementId   Firestore document ID — used only to derive the key.\n     * @param  documentHash  keccak256 of canonical agreement fields.\n     * @param  creator       Originator wallet. Pass address(0) if unavailable.\n     * @param  counterparty  Counterparty wallet. Pass address(0) if unavailable.\n     */\n    function anchor(\n        string  calldata agreementId,\n        bytes32          documentHash,\n        address          creator,\n        address          counterparty\n    ) external {\n        if (documentHash == bytes32(0)) revert ZeroHash();\n        bytes32 key = keccak256(abi.encodePacked(agreementId));\n        if (proofs[key].anchoredAt != 0) revert AlreadyAnchored();\n\n        proofs[key] = Proof({\n            documentHash:  documentHash,\n            creator:       creator,\n            counterparty:  counterparty,\n            anchoredAt:    uint48(block.timestamp)\n        });\n\n        emit Anchored(key, agreementId, documentHash, creator, uint48(block.timestamp));\n    }\n\n    // ── Read ──────────────────────────────────────────────────────────────────\n\n    /**\n     * @notice Retrieve the stored proof for an agreement.\n     * @return documentHash  Anchored fingerprint (bytes32(0) if not found).\n     * @return creator       Originator wallet.\n     * @return counterparty  Counterparty wallet.\n     * @return anchoredAt    Block timestamp of the anchor transaction.\n     */\n    function getProof(string calldata agreementId)\n        external\n        view\n        returns (\n            bytes32 documentHash,\n            address creator,\n            address counterparty,\n            uint48  anchoredAt\n        )\n    {\n        Proof storage p = proofs[keccak256(abi.encodePacked(agreementId))];\n        return (p.documentHash, p.creator, p.counterparty, p.anchoredAt);\n    }\n\n    /**\n     * @notice Returns true if this agreement has been anchored.\n     */\n    function isAnchored(string calldata agreementId) external view returns (bool) {\n        return proofs[keccak256(abi.encodePacked(agreementId))].anchoredAt != 0;\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "evmVersion": "paris",
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    }
+  }
+}
