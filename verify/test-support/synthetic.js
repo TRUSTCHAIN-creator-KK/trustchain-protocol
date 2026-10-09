@@ -1,6 +1,6 @@
 // Builds a made-up but internally consistent "chain + endpoint" fixture.
 // Used to test the record-file path end to end, because the real sample
-// record's account IDs are private and cannot be put in a test.
+// record's account IDs are not public and cannot be put in a test.
 
 import { readFileSync } from 'node:fs';
 import { encodeAnchor, encodeAnchoredData, encodeGetProof, encodeGetProofResult } from '../src/abi.js';

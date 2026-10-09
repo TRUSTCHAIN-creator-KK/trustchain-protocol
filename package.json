@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "cd verify && node --test",
-    "test:live": "cd verify && TRUSTCHAIN_LIVE=1 node --test",
+    "test:live": "node verify/scripts/run-live-tests.js",
     "check": "node scripts/check-dashes.mjs && node scripts/lint-templates.mjs && node contracts/check-build.mjs",
     "verify": "node verify/bin/trustchain-verify.js"
   }

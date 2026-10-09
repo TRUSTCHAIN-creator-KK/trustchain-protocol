@@ -13,32 +13,36 @@ jobs:
   test:
     name: Tests (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        node: [18, 20]
+        # 18 stays while package.json says "node": ">=18".
+        node: [18, 20, 22, 24]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.node }}
       - name: Verifier tests (offline)
-        working-directory: verify
-        run: node --test
+        run: npm test
       - name: Contract build files match the source
         run: node contracts/check-build.mjs
       - name: CLI help runs
         run: node verify/bin/trustchain-verify.js --help
 
   style:
-    name: Markdown and template checks
+    name: House style and template checks
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: 20
-      - name: No em or en dashes in Markdown
-        run: node scripts/check-dashes.mjs
-      - name: Template rules
-        run: node scripts/lint-templates.mjs
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - name: Dash check, template rules and contract build check
+        run: npm run check

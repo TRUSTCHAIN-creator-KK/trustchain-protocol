@@ -42,25 +42,39 @@ and it has no "Read Contract" tab for this address. The steps below work without
 - There is no owner, no admin function, no upgrade path, and no function that
   changes or deletes an entry.
 
+The comments in the source are exactly as deployed, so they cannot be corrected
+without breaking the match. Two are loose. "Used only to derive the key": the ID
+is also written in plain text in the transaction and in the `Anchored` event.
+"No content": no agreement text is stored, but the internal record ID is. The
+source also contains three em dashes. The repository's no-dash rule does not
+apply to this file or its build files.
+
 Things to know before you rely on an entry:
 
 - **Anyone can call `anchor()`.** The contract does not store who sent the
   transaction. TrustChain's anchors are sent by
   `0xF9505f8763649481DD1f604C92b4c0c2fffE7153`. An entry sent by any other
   wallet is not a TrustChain anchor. The verifier in [`../verify`](../verify)
-  checks the sender for this reason.
+  checks the sender for this reason. So someone who sees TrustChain's anchor
+  transaction before it is mined could write a different fingerprint under the
+  same internal record ID first. TrustChain's transaction would then fail and
+  that record could not be anchored in this contract. The verifier would not
+  pass that record.
 - **`agreementId` is TrustChain's internal record ID**, a 20-character string.
   It is not the 8-character Registry ID in a public link such as
   `trustchain.biz/verify/5c79fbb0`. The internal ID is readable in the
   transaction input and in the event.
-- **The wallet slots are empty today.** TrustChain passes the zero address for
-  `creator` and `counterparty`. Nothing on-chain says who the people are.
+- **The wallet slots are empty in every TrustChain anchor so far.** TrustChain
+  passes the zero address for `creator` and `counterparty`. Nothing on-chain
+  says who the people are.
 - **What goes on-chain per anchor:** the internal record ID, the fingerprint,
   the two wallet slots and the block time. Not on-chain: title, terms, amount,
   names, emails, account IDs, signatures, signing times, or the Registry ID.
 - **An anchor from TrustChain's wallet means TrustChain's server wrote it.** It
   does not by itself mean a real deal sits behind it. The wallet has also
-  written at least one test entry with no customer record behind it.
+  written at least one test entry with no record behind it:
+  `verify-d3-real-8sK9i9nWRy`, from a test run on 2026-06-26 with a throwaway
+  test account.
 
 ## How the fingerprint is made
 
@@ -71,9 +85,11 @@ JSON.stringify({ id, title, terms, amount, parties: [creatorAccountId, counterpa
 ```
 
 in that key order, with no spaces, where `id` is the internal record ID. The
-account IDs are private, so the fingerprint cannot be recomputed from the
-agreement text alone. [`../verify/README.md`](../verify/README.md) lists the
-exact rules and test vectors.
+account IDs are not shown on any public page, so the fingerprint cannot be
+recomputed from the agreement text alone. There is no secret salt, so the
+fingerprint hides its inputs only as well as they are hard to guess.
+[`../verify/README.md`](../verify/README.md) lists the exact rules and test
+vectors.
 
 ## Read it on Polygonscan
 
@@ -119,9 +135,12 @@ Three ways, from quickest to strongest.
 1. **Run the verifier.** `node verify/bin/trustchain-verify.js 5c79fbb0` compares
    the Keccak-256 of the code at the address with the runtime code hash above.
 2. **Check the build files without a compiler.**
-   `node contracts/check-build.mjs --live` checks that the source hash matches the
-   metadata file, that the metadata file's IPFS hash is embedded at the end of
-   the runtime bytecode, and that the code on Polygon equals that bytecode.
+   `node contracts/check-build.mjs --live` checks that the compiler input holds
+   this exact source, that the source hash matches the metadata file, that the
+   metadata file's IPFS hash is embedded at the end of the runtime bytecode,
+   that the code on Polygon equals that bytecode, and that the deployment
+   transaction's input equals the creation bytecode. If no RPC answers, it says
+   so and exits 2. It never reports an RPC failure as a mismatch.
 3. **Compile it yourself.** With solc 0.8.20:
 
    ```sh

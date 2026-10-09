@@ -25,7 +25,7 @@ Each template covers the five things most small-deal arguments come back to:
 
 ## How each template is laid out
 
-- **Short form.** One text message, three or four sentences, ending with "Reply yes". Often this is all a small deal needs. Send it and keep the reply.
+- **Short form.** One text message, three or four sentences, ending with "Reply yes". For many small deals, a text and a yes are enough to remember what was agreed. Send it and keep the reply.
 - **Full form.** The two people, the five lines above, and an "Agreed" block.
 - **Optional clauses.** One or two sentences each. Add the ones that fit.
 - **Example.** A filled-in short form.

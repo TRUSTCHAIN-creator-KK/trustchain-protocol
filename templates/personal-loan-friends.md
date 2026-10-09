@@ -34,7 +34,7 @@ Money sent [TRANSFER DATE]. Payments due [PAYMENT DATES]. Fully repaid by [FINAL
 
 ### 5. If someone walks
 
-If a payment is missed, [LENDER NAME] sends one reminder, and we set a new date within [NUMBER] days. The unpaid amount stays owed until it is paid, or until we both agree otherwise in writing.
+If a payment is missed, [LENDER NAME] sends one reminder, and we set a new date within [NUMBER] days. We both agree the unpaid amount is still owed until it is paid, or until we both agree otherwise in writing.
 
 ### Agreed
 
@@ -59,6 +59,6 @@ Add any that fit, above "Agreed". Each one stands alone.
 
 ## Check the rules where you live
 
-Rules about charging interest, and about what a record of a loan should show, can differ where you live. If you add interest, hold something until the loan is repaid, or lend a large amount, check the rules or ask a local professional first. Lend what you could live without.
+Rules about charging interest, how long an unpaid loan can be claimed, and what a record of a loan should show can differ where you live. If you add interest, hold something until the loan is repaid, or lend a large amount, check the rules or ask a local professional first. Lend what you could live without.
 
 Not legal advice.

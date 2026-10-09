@@ -6,6 +6,8 @@ import { formatReport } from '../src/format.js';
 import { recordFingerprint } from '../src/record.js';
 import { fakeFetch } from '../test-support/fake-fetch.js';
 import { syntheticFixture } from '../test-support/synthetic.js';
+import { disallowedKeys } from '../test-support/fixture-shape.js';
+import { RpcError } from '../src/rpc.js';
 
 // Offline fixture recorded from the founder's own public sample record,
 // https://trustchain.biz/verify/5c79fbb0 (see scripts/record-fixtures.js).
@@ -243,4 +245,122 @@ test('synthetic record: the amount as a string instead of a number is caught', a
   const changed = { ...record, amount: '150' };
   const result = await verifyRecord('abcdef01', { fetch: fakeFetch(synthetic), rpcUrls: RPC, record: changed });
   assert.equal(statusOf(result).file_fingerprint, 'fail');
+});
+
+// Text from outside must not be able to draw on the terminal.
+const ESC = String.fromCharCode(0x1b);
+const BEL = String.fromCharCode(0x07);
+const RLO = String.fromCharCode(0x202e);
+const LS = String.fromCharCode(0x2028);
+
+test('a hostile title, status or date cannot add lines, move the cursor or hide text', async () => {
+  const plain = formatReport(await verifyRecord('5c79fbb0', { fetch: fakeFetch(sample), rpcUrls: RPC }));
+  const body = structuredClone(sample.publicRecord.body);
+  body.data.title = `Golf${ESC}[8m\nPASS  fake line${BEL}\r${ESC}[1A${ESC}[2K${RLO}x${LS}y`;
+  body.data.status = `completed\nResult: PASS`;
+  body.data.signatures.originator.signedAt = `2026${ESC}[8m`;
+  const result = await verifyRecord('5c79fbb0', { fetch: fakeFetch(sample, { publicRecord: body }), rpcUrls: RPC });
+  const text = formatReport(result);
+  assert.equal(text.split('\n').length, plain.split('\n').length, 'no extra lines');
+  for (const c of [ESC, BEL, '\r', RLO, LS]) assert.ok(!text.includes(c), `raw U+${c.charCodeAt(0).toString(16)} in report`);
+  assert.ok(text.includes('Golf\\u001b[8m\\u000aPASS  fake line\\u0007'));
+  assert.ok(text.includes('\\u202ex\\u2028y'));
+  assert.equal(text.match(/^Result: /gm).length, 1);
+});
+
+test('only RPCs that answer null for the transaction: the tool says it could not check, not FAIL', async () => {
+  const inner = fakeFetch(sample);
+  const pruned = async (url, init) => {
+    const req = init && init.body ? JSON.parse(init.body) : {};
+    if (['eth_getTransactionByHash', 'eth_getTransactionReceipt'].includes(req.method)) {
+      return { ok: true, status: 200, json: async () => ({ jsonrpc: '2.0', id: req.id, result: null }) };
+    }
+    return inner(url, init);
+  };
+  await assert.rejects(
+    verifyRecord('5c79fbb0', { fetch: pruned, rpcUrls: ['https://pruned.test.invalid'] }),
+    (err) => err instanceof RpcError && /keeps only recent history/.test(err.message) && /--rpc/.test(err.message),
+  );
+});
+
+test('a pruned RPC plus an RPC that errors: still "could not check", not FAIL', async () => {
+  const inner = fakeFetch(sample);
+  const fetch = async (url, init) => {
+    const req = init && init.body ? JSON.parse(init.body) : {};
+    if (url === 'https://down.test.invalid' && req.method !== 'eth_chainId') return { ok: false, status: 503, json: async () => ({}) };
+    if (url === 'https://pruned.test.invalid' && req.method === 'eth_getTransactionByHash') {
+      return { ok: true, status: 200, json: async () => ({ jsonrpc: '2.0', id: req.id, result: null }) };
+    }
+    return inner(url, init);
+  };
+  await assert.rejects(
+    verifyRecord('5c79fbb0', { fetch, rpcUrls: ['https://pruned.test.invalid', 'https://down.test.invalid'] }),
+    (err) => err instanceof RpcError && /HTTP 503/.test(err.message),
+  );
+});
+
+test('a fallback RPC on another chain is skipped, never used for data', async () => {
+  const inner = fakeFetch(sample);
+  const fetch = async (url, init) => {
+    const req = init && init.body ? JSON.parse(init.body) : {};
+    if (url === 'https://pruned.test.invalid' && req.method === 'eth_getTransactionByHash') {
+      return { ok: true, status: 200, json: async () => ({ jsonrpc: '2.0', id: req.id, result: null }) };
+    }
+    if (url === 'https://otherchain.test.invalid') {
+      if (req.method === 'eth_chainId') return { ok: true, status: 200, json: async () => ({ jsonrpc: '2.0', id: req.id, result: '0x1' }) };
+      throw new Error('the other-chain RPC must not be asked for data');
+    }
+    return inner(url, init);
+  };
+  const result = await verifyRecord('5c79fbb0', {
+    fetch,
+    rpcUrls: ['https://pruned.test.invalid', 'https://otherchain.test.invalid', 'https://archive.test.invalid'],
+  });
+  assert.equal(result.ok, true);
+  assert.ok(!result.facts.rpcUrls.includes('https://otherchain.test.invalid'));
+});
+
+test('an API key in an RPC URL is never printed or put in the JSON result', async () => {
+  const keyUrl = 'https://polygon.example.test/v2/SECRETKEY1234567890?apikey=ALSOSECRET';
+  const result = await verifyRecord('5c79fbb0', { fetch: fakeFetch(sample), rpcUrls: [keyUrl] });
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.facts.rpcUrls, ['https://polygon.example.test/...']);
+  const all = JSON.stringify(result) + formatReport(result);
+  assert.ok(!all.includes('SECRETKEY') && !all.includes('ALSOSECRET'));
+
+  const failing = async () => ({ ok: false, status: 500, json: async () => ({}) });
+  const sampleOnly = fakeFetch(sample);
+  const fetch = async (url, init) => (url === keyUrl ? failing() : sampleOnly(url, init));
+  await assert.rejects(verifyRecord('5c79fbb0', { fetch, rpcUrls: [keyUrl] }), (err) => {
+    assert.ok(!err.message.includes('SECRETKEY'));
+    assert.match(err.message, /polygon\.example\.test\/\.\.\./);
+    return true;
+  });
+});
+
+test('with a record file, the result never holds the account IDs', async () => {
+  const result = await verifyRecord('abcdef01', { fetch: fakeFetch(synthetic), rpcUrls: RPC, record });
+  assert.equal(result.ok, true);
+  assert.equal(result.facts.canonical, undefined);
+  const all = JSON.stringify(result) + formatReport(result);
+  assert.ok(!all.includes('uidCreatorAAAA') && !all.includes('uidCounterBBBB'));
+});
+
+test('the report does not suggest the record page shows terms, amount or account IDs', async () => {
+  const text = formatReport(await verifyRecord('5c79fbb0', { fetch: fakeFetch(sample), rpcUrls: RPC }));
+  assert.match(text, /any field other than the title, terms text, amount and the two account IDs\. Even those are covered only when a record file matches\./);
+  assert.doesNotMatch(text, /on the record page besides/);
+});
+
+test('a record file holding JSON null fails cleanly, without a JavaScript error', async () => {
+  const result = await verifyRecord('5c79fbb0', { fetch: fakeFetch(sample), rpcUrls: RPC, record: null });
+  const fileCheck = result.checks.find((c) => c.id === 'file_id');
+  assert.equal(fileCheck.status, 'fail');
+  assert.match(fileCheck.detail, /must contain a JSON object/);
+  assert.doesNotMatch(fileCheck.detail, /Cannot read properties/);
+});
+
+test('the committed fixture holds only the endpoint fields the verifier reads', () => {
+  assert.deepEqual(disallowedKeys(sample.publicRecord.body), []);
+  assert.equal(sample.rpc.filter((r) => r.result === null).length, 0, 'no null answers recorded');
 });

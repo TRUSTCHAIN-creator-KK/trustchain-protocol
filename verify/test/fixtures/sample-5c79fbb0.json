@@ -1,25 +1,21 @@
 {
   "publicId": "5c79fbb0",
-  "recordedAt": "2026-10-09T02:52:55.516Z",
+  "recordedOn": "2026-10-09",
   "publicRecord": {
     "url": "https://us-central1-trust-chain-cc62c.cloudfunctions.net/agreement_publicProof?publicId=5c79fbb0",
     "body": {
       "ok": true,
       "status": "found",
       "data": {
-        "title": "Golf Clubs ",
         "status": "completed",
+        "title": "Golf Clubs ",
         "publicId": "5c79fbb0",
         "blockchain": {
           "isAnchored": true,
           "agreementHash": "0x2730c80122af9f7073d5b486790e0016bb0b2bc582785f84ca2c965f07877128",
           "transactionHash": "0x8ff5cf3555849eb4d8bf5214f6982ce54906820d1ea2b9aad358d251f8086b2d",
-          "contractAddress": "0x649Bc303d15E173D95B4d379e163868b03cf5Fec",
-          "network": "Polygon Mainnet",
           "chainId": 137,
-          "anchoredAt": "2026-07-26T08:37:23.660Z",
-          "explorer": "https://polygonscan.com/tx/0x8ff5cf3555849eb4d8bf5214f6982ce54906820d1ea2b9aad358d251f8086b2d",
-          "status": "anchored"
+          "anchoredAt": "2026-07-26T08:37:23.660Z"
         },
         "signatures": {
           "originator": {

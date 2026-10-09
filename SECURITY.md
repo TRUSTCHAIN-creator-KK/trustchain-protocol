@@ -29,7 +29,7 @@ Out of scope here, but still welcome at the same address: the trustchain.biz app
 `trustchain-verify` trusts:
 
 - TrustChain's public record endpoint, to name the right transaction for a Registry ID;
-- the Polygon RPC you use, to return real chain data. Use your own node or several RPCs (`--rpc`) if this matters to you;
-- the constants in `verify/src/constants.js`: the registry address, the anchoring wallet and the registry code hash. Compare them with [`contracts/DEPLOYMENTS.md`](contracts/DEPLOYMENTS.md) and the chain.
+- the Polygon RPC that answers, to return real chain data. Several `--rpc` URLs are fallbacks, not a cross-check: the first one that answers is used, and the answers are not compared. The tool does ask each RPC for its chain ID before it uses it. Only your own node takes the RPC out of what you trust;
+- the constants in `verify/src/constants.js`: the registry address, the anchoring wallet and the registry code hash. Compare them with [`contracts/DEPLOYMENTS.md`](contracts/DEPLOYMENTS.md) and the chain. The chain shows that the anchoring wallet deployed the registry. That it is the wallet TrustChain anchors with is TrustChain's own statement.
 
 Not legal advice.

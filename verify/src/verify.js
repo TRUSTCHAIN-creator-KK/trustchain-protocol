@@ -23,8 +23,10 @@ import {
   sameHex,
 } from './abi.js';
 import { keccak256 } from './keccak.js';
-import { canonicalRecordString, recordFingerprint, recordId } from './record.js';
-import { createRpcClient } from './rpc.js';
+import { recordFingerprint, recordId } from './record.js';
+import { readJson } from './http.js';
+import { createRpcClient, RpcError } from './rpc.js';
+import { redactUrl } from './text.js';
 
 /** Every check, in the order it runs. Optional checks only run with a record file. */
 export const CHECKS = [
@@ -91,7 +93,7 @@ function createReport(publicId, hasRecord) {
 }
 
 function finish(report) {
-  if (report.rpc && report.rpc.usedUrls.length) report.facts.rpcUrls = report.rpc.usedUrls;
+  if (report.rpc && report.rpc.usedUrls.length) report.facts.rpcUrls = report.rpc.usedUrls.map(redactUrl);
   const failed = report.checks.filter((c) => c.status === 'fail');
   const requiredSkipped = report.checks.filter((c) => !c.optional && c.status === 'skip');
   return {
@@ -112,9 +114,10 @@ async function getPublicRecord(publicId, endpoint, doFetch, timeoutMs) {
   }
   if (!res.ok) throw new Error(`TrustChain's public record endpoint answered HTTP ${res.status}`);
   try {
-    return await res.json();
-  } catch {
-    throw new Error("TrustChain's public record endpoint did not return JSON");
+    return await readJson(res);
+  } catch (err) {
+    if (err instanceof SyntaxError) throw new Error("TrustChain's public record endpoint did not return JSON");
+    throw new Error(`Could not read the answer from TrustChain's public record endpoint: ${err.message}`);
   }
 }
 
@@ -138,6 +141,7 @@ export async function verifyRecord(input, options = {}) {
   const rpc = createRpcClient(options.rpcUrls?.length ? options.rpcUrls : DEFAULT_RPC_URLS, {
     fetch: doFetch,
     timeoutMs,
+    chainId: CHAIN_ID,
   });
   const report = createReport(publicId, options.record !== undefined);
   report.rpc = rpc;
@@ -193,14 +197,19 @@ export async function verifyRecord(input, options = {}) {
     report.set('rpc_chain', 'fail', `The RPC answered chain ID ${Number.parseInt(chainIdHex, 16)}.`);
     return finish(report);
   }
-  report.set('rpc_chain', 'pass', `Chain ID 137 from ${rpc.lastUsedUrl}.`);
+  report.set(
+    'rpc_chain',
+    'pass',
+    `Chain ID 137 from ${redactUrl(rpc.lastUsedUrl)}. Any other RPC used below is asked for its chain ID first.`,
+  );
 
   // 4. The transaction and its receipt.
   const tx = await rpc.call('eth_getTransactionByHash', [txHash]);
   const receipt = await rpc.call('eth_getTransactionReceipt', [txHash]);
   if (!tx || !receipt) {
-    report.set('tx_succeeded', 'fail', 'The RPC does not know this transaction.');
-    return finish(report);
+    // The RPC client throws when every endpoint answers null, so this only
+    // happens with a client that returns null directly.
+    throw new RpcError(`No RPC endpoint returned transaction ${txHash} and its receipt.`);
   }
   const blockNumber = Number.parseInt(receipt.blockNumber, 16);
   facts.blockNumber = blockNumber;
@@ -343,7 +352,9 @@ export async function verifyRecord(input, options = {}) {
       report.set('file_id', 'fail', `The file is for "${fileId}", but the anchor is for "${anchoredId}".`);
     }
     try {
-      facts.canonical = canonicalRecordString(options.record);
+      // The canonical string holds both account IDs, so it is not put in the
+      // result: people paste --json output into bug reports. Library users can
+      // call canonicalRecordString() themselves.
       facts.fingerprintRecomputed = recordFingerprint(options.record);
       if (sameHex(facts.fingerprintRecomputed, stored.documentHash)) {
         report.set('file_fingerprint', 'pass', `Keccak-256 of the canonical record is ${short(facts.fingerprintRecomputed)}.`);

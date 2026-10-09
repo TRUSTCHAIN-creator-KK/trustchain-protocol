@@ -8,8 +8,11 @@
 // with the keys in exactly that order and no spaces. `id` is TrustChain's
 // internal record ID (the string written on-chain), not the 8-character
 // Registry ID from the public link. `parties` holds the two people's
-// TrustChain account IDs, which are never public. That is why nobody can
-// recompute the fingerprint from the agreement text alone.
+// TrustChain account IDs, which are not shown on any public page. That is why
+// nobody can recompute the fingerprint from the agreement text alone.
+//
+// There is no secret salt. The fingerprint hides its inputs only as well as
+// they are hard to guess.
 
 import { keccak256 } from './keccak.js';
 
@@ -39,11 +42,18 @@ function partyIds(record) {
   ];
 }
 
+function assertObject(record) {
+  if (!record || typeof record !== 'object' || Array.isArray(record)) {
+    throw new Error('The record file must contain a JSON object');
+  }
+}
+
 /**
  * The internal record ID a record file says it belongs to.
  * @param {object} record
  */
 export function recordId(record) {
+  assertObject(record);
   const id = record.agreementId ?? record.id;
   if (typeof id !== 'string' || id.length === 0) {
     throw new Error('The record file needs "agreementId": TrustChain\'s internal record ID');
@@ -57,9 +67,7 @@ export function recordId(record) {
  * @returns {string}
  */
 export function canonicalRecordString(record) {
-  if (!record || typeof record !== 'object' || Array.isArray(record)) {
-    throw new Error('The record file must contain a JSON object');
-  }
+  assertObject(record);
   return JSON.stringify({
     id: recordId(record),
     title: pick(record.title),

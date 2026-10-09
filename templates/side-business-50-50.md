@@ -59,6 +59,6 @@ Add any that fit, above "Agreed". Each one stands alone.
 
 ## Check the rules where you live
 
-Registering a business name, licences, insurance, and how a shared business is taxed depend on where you live and how you set it up. Talk to an accountant or a local business advisor before the first paid job. Get local advice first if either of you is putting in more than you could afford to lose, or if you want a non-compete.
+Registering a business name, licences, insurance, who is responsible for what the business owes, and how a shared business is taxed depend on where you live and how you set it up. Talk to an accountant or a local business advisor before the first paid job. Get local advice first if either of you is putting in more than you could afford to lose, or if you want a non-compete.
 
 Not legal advice.

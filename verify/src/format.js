@@ -1,4 +1,11 @@
 // Turns a verification result into plain text for the terminal.
+//
+// Some values come from other people: the title from the record owner, the
+// status and dates from TrustChain's endpoint, the record ID from the chain.
+// Every line is passed through escapeControl, so none of them can add a line,
+// move the cursor or hide text on screen.
+
+import { escapeControl } from './text.js';
 
 const MARK = { pass: 'PASS', fail: 'FAIL', skip: 'SKIP' };
 
@@ -89,8 +96,8 @@ export function formatReport(result) {
   lines.push('What these checks do not show');
   if (!fileChecked) {
     lines.push(
-      '- What the fingerprint was made from. That needs the record file, which holds private account IDs.' +
-        ' The agreement text alone cannot reproduce it.',
+      '- What the fingerprint was made from. That needs the record file, which holds both account IDs.' +
+        ' They are not shown on any public page, and the agreement text alone cannot reproduce the fingerprint.',
     );
   }
   lines.push(
@@ -102,9 +109,10 @@ export function formatReport(result) {
       ' The link is the transaction TrustChain\'s endpoint names.',
   );
   lines.push(
-    '- The currency, or anything on the record page besides the title, terms text, amount and the two account IDs.',
+    '- The currency, or any field other than the title, terms text, amount and the two account IDs.' +
+      ' Even those are covered only when a record file matches.',
   );
   lines.push('');
   lines.push('Not legal advice.');
-  return lines.join('\n');
+  return lines.map(escapeControl).join('\n');
 }

@@ -1,5 +1,7 @@
-// Public facts this verifier checks against. Every value here can be read
-// from the Polygon chain or from trustchain.biz without an account.
+// Public facts this verifier checks against.
+// Every value here can be checked on the Polygon chain without an account.
+// One is TrustChain's own statement: that ANCHOR_WALLET, the wallet that
+// deployed the registry, is the wallet TrustChain anchors with.
 // See ../../contracts/DEPLOYMENTS.md for where each one comes from.
 
 /** Polygon PoS mainnet. */
@@ -33,7 +35,9 @@ export const TOPIC_ANCHORED = '0x1b7ca7bf2a9d218c36588a8decfdf5aa3f1fa20a10a4a8d
 
 /**
  * The public record endpoint behind https://trustchain.biz/verify/<id>.
- * It needs no account and returns only what the public page shows.
+ * This tool calls it with ?publicId=<Registry ID>, the same call the public
+ * page makes. That call needs no account and returns only what the public
+ * page shows.
  */
 export const PUBLIC_RECORD_ENDPOINT =
   'https://us-central1-trust-chain-cc62c.cloudfunctions.net/agreement_publicProof';
@@ -42,12 +46,15 @@ export const PUBLIC_RECORD_ENDPOINT =
  * Public Polygon RPC endpoints that need no API key, tried in order.
  * Some public nodes keep only recent history and answer null for an older
  * transaction, so a null answer also moves on to the next endpoint.
- * Free endpoints come and go. Pass your own with --rpc if these stop working.
+ * On 2026-10-08 the first two returned TrustChain's July 2026 anchor
+ * transaction. The last two answered null for it: they keep only recent
+ * history for transaction lookups, so they are last, as fallbacks for the
+ * other calls. Free endpoints come and go. Pass your own with --rpc.
  */
 export const DEFAULT_RPC_URLS = [
   'https://polygon.drpc.org',
-  'https://1rpc.io/matic',
   'https://polygon.gateway.tenderly.co',
+  'https://1rpc.io/matic',
   'https://polygon-bor-rpc.publicnode.com',
 ];
 

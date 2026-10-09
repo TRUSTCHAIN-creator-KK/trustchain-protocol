@@ -15,7 +15,7 @@ A template here is for an everyday deal between people. It should:
 - **Make no legal claims.** Do not say a term is binding, enforceable, valid or guaranteed. Do not name laws, sections or deadlines. Do not say what the law is anywhere. The "Check the rules where you live" note lists what to look up locally, nothing more.
 - **Stand on its own.** No product pitch inside a template.
 
-House style for all text in this repository:
+House style for all text in this repository, except the deployed contract source and its build files, whose bytes are fixed:
 
 - No em dashes or en dashes. Use a full stop, comma, colon or a plain hyphen.
 - Short sentences.
@@ -31,6 +31,8 @@ node scripts/check-dashes.mjs
 
 - Keep it dependency-free and read-only. It must never send a transaction or ask for a key.
 - Every new check must say exactly what it compared. The tool must never claim more than it checked.
+- Text from outside (titles, dates, error messages) goes through `escapeControl` before it reaches the terminal.
+- An RPC that cannot answer is "could not check" (exit 2), never FAIL.
 - Add a test. Offline tests use the recorded fixture in `verify/test/fixtures/` or synthetic data built in `verify/test-support/`. Never put a real person's account ID, email or private record in a test.
 - Run `cd verify && node --test`.
 
@@ -42,7 +44,7 @@ The contract in `contracts/` is the deployed one, byte for byte. Do not edit `Tr
 
 - One change per pull request.
 - Say what you changed and why.
-- CI must pass: tests on Node.js 18 and 20, the template lint, the dash check and the contract build check.
+- CI must pass: tests on Node.js 18, 20, 22 and 24, the template lint, the dash check and the contract build check.
 
 By contributing, you agree that your contribution is licensed under the license of the folder it goes into: MIT for code, CC BY 4.0 for templates.
 

@@ -8,7 +8,7 @@ How to use it: fill in every [BRACKET]. Where a bracket shows choices split by a
 
 One message. Send it and keep the reply.
 
-> [PRICE] for the [VEHICLE, FOR EXAMPLE 2012 PICKUP], paid in full by [PAYMENT DATE]. It runs fine today, but [KNOWN ISSUES]. Sold as is. Reply yes if that's the deal.
+> [PRICE] for the [VEHICLE, FOR EXAMPLE 2012 PICKUP], paid in full by [PAYMENT DATE]. [CONDITION TODAY, FOR EXAMPLE IT STARTS AND DRIVES], but [KNOWN ISSUES]. Sold as is. Reply yes if that's the deal.
 
 ## Full form
 
@@ -50,7 +50,7 @@ Add any that fit, above "Agreed". Each one stands alone.
 - **Inspection.** The buyer may have the vehicle checked by a mechanic of their choice before [INSPECTION DATE], at the buyer's cost.
 - **Money owed on the vehicle.** The seller states that [NO MONEY IS OWED ON THE VEHICLE / AMOUNT IS OWED TO LENDER AND IS PAID OFF FROM THE PRICE AT HANDOVER].
 - **Fees and taxes.** Transfer fees and taxes are paid by [BUYER / SELLER / SPLIT].
-- **Plates and insurance.** [WHAT HAPPENS TO THE PLATES]. The seller's insurance ends at handover.
+- **Plates and insurance.** [WHAT HAPPENS TO THE PLATES]. The seller cancels or moves their insurance at handover. The buyer arranges their own before driving away.
 - **Tickets and tolls.** Tickets, tolls and fines from the handover time on are the buyer's.
 - **Paying in parts.** The balance is paid in [NUMBER] parts: [AMOUNTS AND DATES]. Keys and papers are handed over [AT THE START / AFTER THE LAST PAYMENT].
 
@@ -60,6 +60,6 @@ Add any that fit, above "Agreed". Each one stands alone.
 
 ## Check the rules where you live
 
-Transfer forms, taxes, safety or emissions checks, and how to check whether money is owed on a vehicle differ by province, state and country. Check with your vehicle licensing office before handover. What "as is" covers can also depend on local rules. Do the transfer paperwork the same day as handover.
+Transfer forms, plates and insurance, taxes, safety or emissions checks, and how to check whether money is owed on a vehicle differ by province, state and country. Check with your vehicle licensing office before handover. What "as is" covers can also depend on local rules. Do the transfer paperwork the same day as handover.
 
 Not legal advice.

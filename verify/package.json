@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "test": "node --test",
-    "test:live": "TRUSTCHAIN_LIVE=1 node --test",
+    "test:live": "node scripts/run-live-tests.js",
     "record-fixtures": "node scripts/record-fixtures.js"
   },
   "engines": {
