@@ -39,7 +39,7 @@ What goes on-chain for each anchor: TrustChain's internal record ID (as plain te
 
 ## Try it on a real record
 
-The founder's own sample record is public: <https://trustchain.biz/verify/5c79fbb0>. It is a test deal for a set of golf clubs. The founder made it, signed both sides with two of his own accounts, and anchored it. It is a sample, not a customer deal.
+A public sample record you can check: <https://trustchain.biz/verify/5c79fbb0>. We made it while building and testing the app, to run the whole flow end to end: a plain-words draft, signatures from both sides, and an anchor on Polygon. It is a development sample, not a customer deal.
 
 ```sh
 git clone https://github.com/TRUSTCHAIN-creator-KK/trustchain-protocol.git
