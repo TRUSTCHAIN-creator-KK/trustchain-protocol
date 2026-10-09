@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [18, 20]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Verifier tests (offline)
+        working-directory: verify
+        run: node --test
+      - name: Contract build files match the source
+        run: node contracts/check-build.mjs
+      - name: CLI help runs
+        run: node verify/bin/trustchain-verify.js --help
+
+  style:
+    name: Markdown and template checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: No em or en dashes in Markdown
+        run: node scripts/check-dashes.mjs
+      - name: Template rules
+        run: node scripts/lint-templates.mjs

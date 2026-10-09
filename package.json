@@ -1,0 +1,16 @@
+{
+  "name": "trustchain-protocol",
+  "private": true,
+  "description": "TrustChain's open verifier, anchor contract and plain-words agreement templates.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "cd verify && node --test",
+    "test:live": "cd verify && TRUSTCHAIN_LIVE=1 node --test",
+    "check": "node scripts/check-dashes.mjs && node scripts/lint-templates.mjs && node contracts/check-build.mjs",
+    "verify": "node verify/bin/trustchain-verify.js"
+  }
+}

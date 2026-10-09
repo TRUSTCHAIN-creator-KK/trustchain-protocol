@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security problem
+    url: https://github.com/TRUSTCHAIN-creator-KK/trustchain-protocol/blob/main/SECURITY.md
+    about: Please report security problems by email, not in a public issue.
+  - name: TrustChain app support
+    url: https://trustchain.biz
+    about: Questions about your account or a record in the app.
