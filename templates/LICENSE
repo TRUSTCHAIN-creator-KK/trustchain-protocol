@@ -1,0 +1,24 @@
+The agreement templates in this folder (templates/*.md) are licensed under the
+Creative Commons Attribution 4.0 International License (CC BY 4.0).
+
+Copyright (c) 2026 TrustChain
+
+Full legal code: https://creativecommons.org/licenses/by/4.0/legalcode
+Plain summary:   https://creativecommons.org/licenses/by/4.0/
+
+In short, you may copy, share and adapt these templates for any purpose,
+including commercial use, as long as you give credit, link to the license, and
+say if you changed them. A credit line such as this is enough:
+
+    Based on the TrustChain plain-words templates,
+    https://github.com/TRUSTCHAIN-creator-KK/trustchain-protocol (CC BY 4.0)
+
+Filling in a template for your own agreement? You do not need to put a credit
+line inside that agreement. The credit applies when you publish or distribute
+the templates themselves, or your own collection based on them.
+
+The templates are not legal advice. They are provided as is, without any
+promise that they fit your situation or the rules where you live.
+
+The code in this repository is licensed separately under the MIT License. See
+the LICENSE file at the root of the repository.
