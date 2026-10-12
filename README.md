@@ -25,13 +25,13 @@ When the verifier passes, it shows:
 - A specific fingerprint was written to TrustChain's registry contract on Polygon, at a specific block time, by TrustChain's anchoring wallet.
 - The registry still holds that fingerprint. The contract has no function to change or delete an entry, no owner and no upgrade path.
 - TrustChain's public record endpoint, the one the public page reads, reports the same fingerprint for that Registry ID.
-- With a record file (the app cannot export one yet, see [`verify/README.md`](verify/README.md#the-record-file---record)): the record's title, terms text, amount and the two account IDs existed in exactly that form no later than that block time. Change one character and the fingerprint no longer matches. That is what tamper-evident means here: a change shows. It does not mean a change is impossible.
+- With a record file (the app exports one from an agreement's Proof tab, see [`verify/README.md`](verify/README.md#the-record-file---record)): the record's title, terms text, amount and the two account IDs existed in exactly that form no later than that block time. Change one character and the fingerprint no longer matches. That is what tamper-evident means here: a change shows. It does not mean a change is impossible.
 
 It does not show:
 
 - **Who the people are, or that anyone signed.** Signing happens in TrustChain's app, and signatures are kept in TrustChain's database. Nothing about signing is on-chain.
 - **What the fingerprint was made from**, without the record file. The fingerprint is Keccak-256 over a canonical record that includes TrustChain's internal record ID and both people's account IDs. The account IDs are not shown on any public page, so you cannot recompute the fingerprint from the agreement text alone.
-- **The currency, or fields other than the title, the terms text and the amount.**
+- **The currency, or fields other than the title, the terms text and the amount.** Records made with the app's form since 2026-10-12 carry the amount with its currency, the completion date, the governing law, who owns the finished work and the NDA line inside the terms text, so for those records these are covered.
 - **That this public link belongs to that anchor**, beyond TrustChain's word. The 8-character Registry ID in the link is not written on-chain. The link between them is the transaction that TrustChain's public endpoint names.
 - **That a deal is fair, allowed where you live, or will be kept.** A record shows the terms as they were written down. It does not decide whether a term is allowed.
 

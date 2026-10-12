@@ -23,7 +23,7 @@ You can pass the link or just the Registry ID (`5c79fbb0`). Options:
 | Option | What it does |
 |---|---|
 | `--rpc <url>` | Use this Polygon RPC. Repeat it to give fallbacks. Fallbacks are tried in order. They are not compared with each other. |
-| `--record <file>` | Recompute the fingerprint from a record file and compare it with the chain. The app has no export for this file yet (see below). |
+| `--record <file>` | Recompute the fingerprint from a record file and compare it with the chain. The app exports it from an agreement's Proof tab (see below). |
 | `--json` | Print the full result as JSON. |
 | `--timeout <ms>` | Timeout per request, a whole number of milliseconds. Default 20000. |
 
@@ -72,8 +72,10 @@ the transaction). Exit code 2 is never a verdict on the record.
   TrustChain's endpoint returns.
 - **The currency, or any field other than title, terms text and amount.** For
   records made with the app's step-by-step form, the terms text includes the
-  scope, deliverables, dates and additional terms. Other fields on the record
-  page are not covered.
+  scope, deliverables, dates and additional terms. Records made with the form
+  since 2026-10-12 also carry the amount with its currency, the completion date,
+  the governing law, who owns the finished work and the NDA line in the terms
+  text, so those are covered too. Other fields on the record page are not.
 
 The record page on trustchain.biz shows the time TrustChain's server saved the
 anchor. It is usually a few seconds after the block time. Use the block time.
@@ -97,10 +99,12 @@ TrustChain's stored record shape is also accepted: `creatorUid` (or
 `parties.originator.uid`) and `parties.counterparty.uid` instead of the
 `parties` array, and `id` instead of `agreementId`.
 
-There is no button in the TrustChain app that exports this file yet. Until there
-is, this mode is for TrustChain itself, for auditors, and for parties who get
-their raw record from TrustChain. A PDF or certificate from the app is not
-enough: none of them contains the account IDs.
+Since 2026-10-12 the TrustChain app exports this file: on an agreement's Proof
+tab, "Download record file". It is available to the two people on the agreement.
+It holds exactly these inputs plus when the record was created, signed and
+anchored, and it contains both people's account IDs, so share it only with people
+who should see the agreement. A PDF or certificate from the app is not enough:
+none of them contains the account IDs.
 
 ### Exact rules
 

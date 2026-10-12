@@ -22,12 +22,15 @@ This folder holds its exact source, its ABI and the files needed to rebuild it.
 | Runtime code hash (Keccak-256) | `0x4ed4a1d4ea7107f7b78a50a2224c4e3e42c8edd9ee4c60127478487c4f43df10` |
 | Source hash (Keccak-256) | `0xa2b5eca9b2f6a396ee88d39e762c266a44a88191e4803145f73c7dd37310e224` |
 | License | MIT (SPDX header in the source) |
+| Sourcify | exact match, verified 2026-10-12: <https://repo.sourcify.dev/137/0x649Bc303d15E173D95B4d379e163868b03cf5Fec> |
+| Polygonscan | exact match, verified 2026-10-12: <https://polygonscan.com/address/0x649Bc303d15E173D95B4d379e163868b03cf5Fec#code> |
 
 Explorer: <https://polygonscan.com/address/0x649Bc303d15E173D95B4d379e163868b03cf5Fec>
 
-The source is not yet verified on Polygonscan or Sourcify (checked 2026-10-08).
-Until it is, Polygonscan shows raw input data and raw logs instead of decoded ones,
-and it has no "Read Contract" tab for this address. The steps below work without that.
+The source is verified on Sourcify (exact match, 2026-10-12) and on Polygonscan
+(exact match, 2026-10-12). Both compiled the published source and found it matches
+the code at this address. Polygonscan can decode anchor transactions and their
+Anchored logs. The steps below also work without those views.
 
 ## What the contract does
 
